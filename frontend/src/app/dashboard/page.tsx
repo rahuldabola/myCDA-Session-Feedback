@@ -3,6 +3,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import ActiveClassesCard from "@/components/ActiveClassesCard";
 import ProfileCard from "@/components/ProfileCard";
+import StudentFeedbackSection from "@/components/StudentFeedbackSection";
+import InstructorFeedbackSummaryCard from "@/components/InstructorFeedbackSummaryCard";
 
 /**
  * myCDA Dashboard
@@ -27,19 +29,15 @@ export default function DashboardPage() {
         <ActiveClassesCard />
         <ProfileCard />
 
-        {/*
-          CANDIDATE: Add your feedback cards here.
+        {/* Students & parents: submission form + feedback history */}
+        {(user.role === "student" || user.role === "parent") && (
+          <StudentFeedbackSection />
+        )}
 
-          - Students & parents should see:
-            1. A way to submit feedback for eligible sessions
-            2. Their feedback history
-
-          - Instructors should see:
-            1. Their aggregated feedback summary (anonymized)
-
-          Use role-conditional rendering like the pattern above.
-          Wrap each card in <DashboardCard>.
-        */}
+        {/* Instructors & admins: anonymized aggregate scores only */}
+        {(user.role === "instructor" || user.role === "admin") && (
+          <InstructorFeedbackSummaryCard />
+        )}
       </div>
     </div>
   );

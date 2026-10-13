@@ -58,3 +58,46 @@ export interface PaginatedResponse<T> {
   page_size: number;
   results: T[];
 }
+
+export interface SessionFeedback {
+  id: number;
+  session: number;
+  session_date: string;
+  class_name: string;
+  session_topic: string;
+  student: number;
+  student_display: UserMinimal;
+  rating_clarity: number;
+  rating_engagement: number;
+  rating_pace: number;
+  note: string;
+  created_by_display: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SessionFeedbackInput {
+  session: number;
+  student?: number;
+  rating_clarity: number;
+  rating_engagement: number;
+  rating_pace: number;
+  note: string;
+}
+
+/** Aggregate-only: the API never returns per-student or per-session data. */
+export interface InstructorFeedbackSummary {
+  instructor_id: number;
+  window_size: number;
+  sessions_in_window: number;
+  sessions_with_feedback: number;
+  total_feedback: number;
+  min_feedback_for_scores: number;
+  /** null when there are too few responses to show scores anonymously */
+  averages: {
+    clarity: number;
+    engagement: number;
+    pace: number;
+    overall: number;
+  } | null;
+}

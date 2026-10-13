@@ -89,4 +89,23 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Flatten a DRF error body into readable messages.
+ * Handles {"detail": "..."}, {"non_field_errors": [...]} and
+ * {"<field>": ["..."]} shapes.
+ */
+export function getErrorMessages(err: unknown, fallback = "Something went wrong."): string[] {
+  if (!(err instanceof ApiError)) return [fallback];
+  const messages: string[] = [];
+  for (const [field, value] of Object.entries(err.body)) {
+    const list = Array.isArray(value) ? value : [value];
+    for (const msg of list) {
+      if (typeof msg !== "string") continue;
+      const prefix = field === "detail" || field === "non_field_errors" ? "" : `${field.replace(/_/g, " ")}: `;
+      messages.push(prefix + msg);
+    }
+  }
+  return messages.length ? messages : [fallback];
+}
+
 export const api = new ApiClient();
